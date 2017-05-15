@@ -9,25 +9,31 @@ public:
 	Node(Node, int);
 	Node* next;
 	int Data();
+	bool HasParentCheck();
+	void ProveParent(Node &other);
 
 private:
 	int _data;
+	bool _noParent;
 };
 
 Node::Node()
 {
 	_data = 0;
+	_noParent = true;
 }
 
 Node::Node(int d)
 {
 	_data = d;
+	_noParent = true;
 }
 
 Node::Node(Node n, int d)
 {
 	next = &n;
 	_data = d;
+	_noParent = true;
 }
 
 int Node::Data()
@@ -35,31 +41,47 @@ int Node::Data()
 	return _data;
 }
 
-void NodeSwap(Node &hNode, Node &lNode, Node &fNode)
+bool Node::HasParentCheck()
+{
+	return _data;
+}
+
+void Node::ProveParent(Node &other)
+{
+	if (other.next == this)
+	{
+		_noParent = false;
+	}
+}
+
+bool NodeSwap(Node &hNode, Node &lNode, Node &fNode)
 {
 	Node nPtr1 = Node();
 	nPtr1.next = lNode.next;
 	if (hNode.next == &lNode)
-			lNode.next = &hNode;
+		lNode.next = &hNode;
+	else
+		lNode.next = hNode.next;
+
+	Node nPtr2 = Node();
+	nPtr2.next = &nPtr2;
+	bool looped = false;
+
+	while (nPtr2.next->next != &lNode)
+	{
+		if (!looped)
+			nPtr2.next = &fNode;
 		else
-			lNode.next = hNode.next;
-		Node nPtr2 = Node();
-		nPtr2.next = &nPtr2;
-		bool looped = false;
+			nPtr2.next = nPtr2.next->next;
 
-		while (nPtr2.next->next != &lNode)
-		{
-			if (!looped)
-				nPtr2.next = &fNode;
-			else
-				nPtr2.next = nPtr2.next->next;
+		looped = true;
+	}
+	nPtr2.next->next = &hNode;
+	nPtr2.next = &nPtr2;
+	looped = false;
 
-			looped = true;
-		}
-		nPtr2.next->next = &hNode;
-		nPtr2.next = &nPtr2;
-		looped = false;
-
+	if (&hNode != &fNode)
+	{
 		while (nPtr2.next->next != &hNode)
 		{
 			if (!looped)
@@ -71,6 +93,13 @@ void NodeSwap(Node &hNode, Node &lNode, Node &fNode)
 		}
 		nPtr2.next->next = &lNode;
 		hNode.next = nPtr1.next;
+	}
+	else
+	{
+
+	}
+
+	return true;
 }
 
 int main()
